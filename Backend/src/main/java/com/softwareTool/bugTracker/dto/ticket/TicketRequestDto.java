@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -21,4 +23,6 @@ public class TicketRequestDto {
     private String status;
 
     private String priority;
+
+    private LocalDateTime dueDate;
 }

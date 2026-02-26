@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/tickets")
-public class TickerController {
+public class TicketController {
 
     @Autowired
     private TicketService ticketService;
@@ -52,11 +53,11 @@ public class TickerController {
         return new ResponseEntity<>(updatedTicket, HttpStatus.OK);
     }
 
-    @PutMapping("/{TicketId}/assign/{userId}")
+    @PutMapping("/{ticketId}/assign/{userId}")
     public ResponseEntity<?> addAssigneeToTicket(@PathVariable Long ticketId, @PathVariable Long userId) {
 
-        ticketService.addAssigneeToTicket(ticketId, userId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        TicketResponseDto ticketResponseDto = ticketService.addAssigneeToTicket(ticketId, userId);
+        return new ResponseEntity<>(ticketResponseDto,HttpStatus.OK);
     }
 
 }

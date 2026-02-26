@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class Ticket {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
@@ -27,6 +28,8 @@ public class Ticket {
     private Priority priority;
 
     private LocalDateTime createdAt;
+
+    private LocalDateTime dueDate;
 
     @ManyToOne
     @JoinColumn(name = "project_id")

@@ -5,6 +5,7 @@ import com.softwareTool.bugTracker.dto.ticket.TicketRequestDto;
 import com.softwareTool.bugTracker.dto.ticket.TicketResponseDto;
 import com.softwareTool.bugTracker.dto.ticketUpdate.UpdateStatusRequestDto;
 import com.softwareTool.bugTracker.entity.*;
+import com.softwareTool.bugTracker.exception.ResourceNotFoundException;
 import com.softwareTool.bugTracker.exception.UserNotBelongToProject;
 import com.softwareTool.bugTracker.repository.ProjectRepo;
 import com.softwareTool.bugTracker.repository.TicketRepo;
@@ -40,6 +41,7 @@ public class TicketServiceImpl implements TicketService {
                 .priority(Priority.valueOf(dto.getPriority()))
                 .status(Status.valueOf(dto.getStatus()))
                 .createdAt(LocalDateTime.now())
+                .dueDate(dto.getDueDate())
                 .project(project)
                 .build();
 
@@ -52,9 +54,6 @@ public class TicketServiceImpl implements TicketService {
     public List<TicketResponseDto> getAllTicketsByProjectId(Long projectId) {
 
         List<Ticket> allTickets = ticketRepo.findByProjectId(projectId);
-        if(allTickets.isEmpty()){
-            throw new RuntimeException("No tickets found for project with id: " + projectId);
-        }
 
         List<TicketResponseDto> ticketResponseDtos = allTickets.stream()
                 .map(this::mapToDto)
@@ -126,6 +125,8 @@ public class TicketServiceImpl implements TicketService {
                 .status(ticket.getStatus().name())
                 .createdAt(ticket.getCreatedAt())
                 .project(ticket.getProject())
+                .dueDate(ticket.getDueDate())
+                .assignedUser(ticket.getAssignedUser())
                 .build();
     }
 }

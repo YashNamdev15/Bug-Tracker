@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description"
+            content="Secure login and registration for JIRA Clone project management application">
+        <title>User Authentication - JIRA Clone</title>
+        <link rel="stylesheet" href="../css/main.css">
+
+        <script type="module" async
+            src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fjiraclone5645back.builtwithrocket.new&_be=https%3A%2F%2Fappanalytics.rocket.new&_v=0.1.17"></script>
+        <script type="module" defer
+            src="https://static.rocket.new/rocket-shot.js?v=0.0.2"></script>
+    </head>
+    <body class="bg-background min-h-screen">
+        <!-- Background Pattern -->
+        <div class="fixed inset-0 z-0 opacity-5">
+            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="grid" width="40" height="40"
+                        patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none"
+                            stroke="currentColor" stroke-width="1" />
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)"
+                    class="text-primary" />
+            </svg>
+        </div>
+
+        <!-- Main Container -->
+        <div
+            class="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
+            <div class="w-full max-w-md">
+                <!-- Logo and Header -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center mb-4">
+                            <h1 class="brand" style="
+                                font-size:32px;
+                                font-weight:700;
+                                background:linear-gradient(90deg,#4f46e5,#ec4899);
+                                -webkit-background-clip:text;
+                                color:transparent;
+                                letter-spacing:.5px;
+                            ">
+                                WorkSpace
+                            </h1>
+                        </div>
+                    <h1
+                        class="text-3xl font-heading font-bold text-text-primary mb-2">Welcome
+                        to WorkSpace</h1>
+                    <p class="text-text-secondary">Manage your projects
+                        efficiently</p>
+                </div>
+
+                <!-- Authentication Card -->
+                <div
+                    class="bg-surface rounded-lg border border-border-light shadow-lg overflow-hidden">
+                    <!-- Tab Navigation -->
+                    <div
+                        class="flex border-b border-border-light bg-secondary-50 dark:bg-secondary-900">
+                        <button id="loginTab"
+                            class="flex-1 px-6 py-4 text-center font-medium transition-all duration-250 border-b-2 border-primary text-primary"
+                            onclick="switchTab('login')">
+                            Login
+                        </button>
+                        <button id="registerTab"
+                            class="flex-1 px-6 py-4 text-center font-medium transition-all duration-250 border-b-2 border-transparent text-text-secondary hover:text-text-primary"
+                            onclick="switchTab('register')">
+                            Register
+                        </button>
+                    </div>
+
+                    <!-- Forms Container -->
+                    <div class="p-8">
+                        <!-- Login Form -->
+                        <form id="loginForm" class="space-y-6">
+                            <div>
+                                <label for="loginEmail"
+                                    class="block text-sm font-medium text-text-primary mb-2">
+                                    Email Address
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="email"
+                                        id="loginEmail"
+                                        name="email"
+                                        class="input pl-11"
+                                        placeholder="john.doe@example.com"
+                                        required
+                                        autocomplete="email">
+                                    <img
+                                        src="https://img.rocket.new/generatedImages/rocket_gen_img_1175352d5-1767644430280.png"
+                                        alt="Email icon"
+                                        class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5"
+                                        onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                </div>
+                                <p id="loginEmailError"
+                                    class="text-error text-sm mt-1 hidden">Please
+                                    enter a valid email address</p>
+                            </div>
+
+                            <div>
+                                <label for="loginPassword"
+                                    class="block text-sm font-medium text-text-primary mb-2">
+                                    Password
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="password"
+                                        id="loginPassword"
+                                        name="password"
+                                        class="input pl-11 pr-11"
+                                        placeholder="Enter your password"
+                                        required
+                                        autocomplete="current-password">
+                                    <img
+                                        src="https://img.rocket.new/generatedImages/rocket_gen_img_1a14b7761-1772023938428.png"
+                                        alt="Lock icon"
+                                        class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5"
+                                        onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                    <button
+                                        type="button"
+                                        onclick="togglePassword('loginPassword', 'loginPasswordToggle')"
+                                        class="absolute right-4 top-1/2 transform -translate-y-1/2"
+                                        aria-label="Toggle password visibility">
+                                        <img
+                                            id="loginPasswordToggle"
+                                            src="https://img.rocket.new/generatedImages/rocket_gen_img_148e1a884-1765409696333.png"
+                                            alt="Show password icon"
+                                            class="w-5 h-5"
+                                            onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                    </button>
+                                </div>
+                                <p id="loginPasswordError"
+                                    class="text-error text-sm mt-1 hidden">Password
+                                    is required</p>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <label class="flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        id="rememberMe"
+                                        class="w-4 h-4 text-primary border-border-medium rounded focus:ring-2 focus:ring-primary">
+                                    <span
+                                        class="ml-2 text-sm text-text-secondary">Remember
+                                        me</span>
+                                </label>
+                                <a href="javascript:void(0)"
+                                    onclick="showForgotPassword()"
+                                    class="text-sm text-primary hover:text-primary-700 transition-colors">
+                                    Forgot password?
+                                </a>
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary w-full"
+                                id="loginSubmitBtn">
+                                <span id="loginBtnText">Sign In</span>
+                                <span id="loginBtnLoader" class="hidden">
+                                    <svg class="animate-spin h-5 w-5 mx-auto"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12"
+                                            cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </span>
+                            </button>
+
+                            <div id="loginSuccess"
+                                class="hidden bg-success-50 border border-success-600 text-success-700 px-4 py-3 rounded-md">
+                                <div class="flex items-center">
+                                    <img
+                                        src="https://img.rocket.new/generatedImages/rocket_gen_img_16a706bd8-1772023936852.png"
+                                        alt="Success icon"
+                                        class="w-5 h-5 mr-2"
+                                        onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                    <span>Login successful!
+                                        Redirecting...</span>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Register Form -->
+                        <form id="registerForm" class="space-y-6 hidden">
+                            <div>
+                                <label for="registerName"
+                                    class="block text-sm font-medium text-text-primary mb-2">
+                                    Full Name
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="text"
+                                        id="registerName"
+                                        name="name"
+                                        class="input pl-11"
+                                        placeholder="John Doe"
+                                        required
+                                        autocomplete="name">
+                                    <img
+                                        src="https://img.rocket.new/generatedImages/rocket_gen_img_114488498-1772023938706.png"
+                                        alt="User icon"
+                                        class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5"
+                                        onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                </div>
+                                <p id="registerNameError"
+                                    class="text-error text-sm mt-1 hidden">Name
+                                    is required</p>
+                            </div>
+
+                            <div>
+                                <label for="registerEmail"
+                                    class="block text-sm font-medium text-text-primary mb-2">
+                                    Email Address
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="email"
+                                        id="registerEmail"
+                                        name="email"
+                                        class="input pl-11"
+                                        placeholder="john.doe@example.com"
+                                        required
+                                        autocomplete="email">
+                                    <img
+                                        src="https://img.rocket.new/generatedImages/rocket_gen_img_1175352d5-1767644430280.png"
+                                        alt="Email icon"
+                                        class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5"
+                                        onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                </div>
+                                <p id="registerEmailError"
+                                    class="text-error text-sm mt-1 hidden">Please
+                                    enter a valid email address</p>
+                            </div>
+
+                            <div>
+                                <label for="registerPassword"
+                                    class="block text-sm font-medium text-text-primary mb-2">
+                                    Password
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="password"
+                                        id="registerPassword"
+                                        name="password"
+                                        class="input pl-11 pr-11"
+                                        placeholder="Create a strong password"
+                                        required
+                                        autocomplete="new-password">
+                                    <img
+                                        src="https://img.rocket.new/generatedImages/rocket_gen_img_1a14b7761-1772023938428.png"
+                                        alt="Lock icon"
+                                        class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5"
+                                        onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                    <button
+                                        type="button"
+                                        onclick="togglePassword('registerPassword', 'registerPasswordToggle')"
+                                        class="absolute right-4 top-1/2 transform -translate-y-1/2"
+                                        aria-label="Toggle password visibility">
+                                        <img
+                                            id="registerPasswordToggle"
+                                            src="https://img.rocket.new/generatedImages/rocket_gen_img_148e1a884-1765409696333.png"
+                                            alt="Show password icon"
+                                            class="w-5 h-5"
+                                            onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                    </button>
+                                </div>
+                                <!-- Password Strength Indicator -->
+                                <div class="mt-2">
+                                    <div class="flex gap-1 mb-1">
+                                        <div id="strength1"
+                                            class="h-1 flex-1 bg-border-light rounded transition-colors"></div>
+                                        <div id="strength2"
+                                            class="h-1 flex-1 bg-border-light rounded transition-colors"></div>
+                                        <div id="strength3"
+                                            class="h-1 flex-1 bg-border-light rounded transition-colors"></div>
+                                        <div id="strength4"
+                                            class="h-1 flex-1 bg-border-light rounded transition-colors"></div>
+                                    </div>
+                                    <p id="strengthText"
+                                        class="text-xs text-text-secondary">Password
+                                        strength: <span id="strengthLabel">Enter
+                                            password</span></p>
+                                </div>
+                                <p id="registerPasswordError"
+                                    class="text-error text-sm mt-1 hidden">Password
+                                    must be at least 8 characters</p>
+                            </div>
+
+                            <div>
+                                <label for="confirmPassword"
+                                    class="block text-sm font-medium text-text-primary mb-2">
+                                    Confirm Password
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="password"
+                                        id="confirmPassword"
+                                        name="confirmPassword"
+                                        class="input pl-11 pr-11"
+                                        placeholder="Re-enter your password"
+                                        required
+                                        autocomplete="new-password">
+                                    <img
+                                        src="https://img.rocket.new/generatedImages/rocket_gen_img_13ede69e3-1767292165388.png"
+                                        alt="Lock check icon"
+                                        class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5"
+                                        onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                    <button
+                                        type="button"
+                                        onclick="togglePassword('confirmPassword', 'confirmPasswordToggle')"
+                                        class="absolute right-4 top-1/2 transform -translate-y-1/2"
+                                        aria-label="Toggle password visibility">
+                                        <img
+                                            id="confirmPasswordToggle"
+                                            src="https://img.rocket.new/generatedImages/rocket_gen_img_148e1a884-1765409696333.png"
+                                            alt="Show password icon"
+                                            class="w-5 h-5"
+                                            onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                    </button>
+                                </div>
+                                <p id="confirmPasswordError"
+                                    class="text-error text-sm mt-1 hidden">Passwords
+                                    do not match</p>
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary w-full"
+                                id="registerSubmitBtn">
+                                <span id="registerBtnText">Create Account</span>
+                                <span id="registerBtnLoader" class="hidden">
+                                    <svg class="animate-spin h-5 w-5 mx-auto"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12"
+                                            cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </span>
+                            </button>
+
+                            <div id="registerSuccess"
+                                class="hidden bg-success-50 border border-success-600 text-success-700 px-4 py-3 rounded-md">
+                                <div class="flex items-center">
+                                    <img
+                                        src="https://img.rocket.new/generatedImages/rocket_gen_img_16a706bd8-1772023936852.png"
+                                        alt="Success icon"
+                                        class="w-5 h-5 mr-2"
+                                        onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                    <span>Account created successfully!
+                                        Redirecting...</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Forgot Password Modal -->
+        <div id="forgotPasswordModal" class="modal-overlay hidden"
+            onclick="closeForgotPassword(event)">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <div class="flex items-center justify-between mb-6">
+                    <h2
+                        class="text-2xl font-heading font-semibold text-text-primary">Reset
+                        Password</h2>
+                    <button onclick="closeForgotPassword()"
+                        class="text-text-secondary hover:text-text-primary transition-colors"
+                        aria-label="Close modal">
+                        <img
+                            src="https://img.rocket.new/generatedImages/rocket_gen_img_1361cc0ef-1772023937860.png"
+                            alt="Close icon"
+                            class="w-6 h-6"
+                            onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                    </button>
+                </div>
+                <p class="text-text-secondary mb-6">Enter your email address and
+                    we'll send you a link to reset your password.</p>
+                <form id="forgotPasswordForm" class="space-y-6">
+                    <div>
+                        <label for="resetEmail"
+                            class="block text-sm font-medium text-text-primary mb-2">
+                            Email Address
+                        </label>
+                        <div class="relative">
+                            <input
+                                type="email"
+                                id="resetEmail"
+                                class="input pl-11"
+                                placeholder="john.doe@example.com"
+                                required>
+                            <img
+                                src="https://img.rocket.new/generatedImages/rocket_gen_img_1175352d5-1767644430280.png"
+                                alt="Email icon"
+                                class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5"
+                                onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="closeForgotPassword()"
+                            class="btn btn-outline flex-1">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary flex-1">
+                            Send Reset Link
+                        </button>
+                    </div>
+                    <div id="resetSuccess"
+                        class="hidden bg-success-50 border border-success-600 text-success-700 px-4 py-3 rounded-md">
+                        <div class="flex items-center">
+                            <img
+                                src="https://img.rocket.new/generatedImages/rocket_gen_img_16a706bd8-1772023936852.png"
+                                alt="Success icon"
+                                class="w-5 h-5 mr-2"
+                                onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                            <span>Reset link sent! Check your email.</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+        // Tab Switching
+        function switchTab(tab) {
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+
+            if (tab === 'login') {
+                loginTab.classList.add('border-primary', 'text-primary');
+                loginTab.classList.remove('border-transparent', 'text-text-secondary');
+                registerTab.classList.remove('border-primary', 'text-primary');
+                registerTab.classList.add('border-transparent', 'text-text-secondary');
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+            } else {
+                registerTab.classList.add('border-primary', 'text-primary');
+                registerTab.classList.remove('border-transparent', 'text-text-secondary');
+                loginTab.classList.remove('border-primary', 'text-primary');
+                loginTab.classList.add('border-transparent', 'text-text-secondary');
+                registerForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            }
+        }
+
+        // Password Toggle
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.src = 'https://api.iconify.design/mdi:eye-off-outline.svg?color=%2364748B';
+                icon.alt = 'Hide password icon';
+            } else {
+                input.type = 'password';
+                icon.src = 'https://api.iconify.design/mdi:eye-outline.svg?color=%2364748B';
+                icon.alt = 'Show password icon';
+            }
+        }
+
+        // Password Strength Checker
+        document.getElementById('registerPassword').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strength = calculatePasswordStrength(password);
+            updateStrengthIndicator(strength);
+        });
+
+        function calculatePasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            return strength;
+        }
+
+        function updateStrengthIndicator(strength) {
+            const indicators = ['strength1', 'strength2', 'strength3', 'strength4'];
+            const colors = ['bg-error-500', 'bg-warning-500', 'bg-warning-500', 'bg-success-500'];
+            const labels = ['Weak', 'Fair', 'Good', 'Strong'];
+            
+            indicators.forEach((id, index) => {
+                const element = document.getElementById(id);
+                element.className = 'h-1 flex-1 rounded transition-colors';
+                if (index < strength) {
+                    element.classList.add(colors[strength - 1]);
+                } else {
+                    element.classList.add('bg-border-light');
+                }
+            });
+
+            document.getElementById('strengthLabel').textContent = strength > 0 ? labels[strength - 1] : 'Enter password';
+        }
+
+        // ================= LOGIN FORM =================
+        document.getElementById('loginForm')
+        .addEventListener('submit', function(e) {
+
+            e.preventDefault();
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            let isValid = true;
+
+            // Email validation
+            if (!email || !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                loginEmailError.classList.remove('hidden');
+                loginEmail.classList.add('input-error');
+                isValid = false;
+            } else {
+                loginEmailError.classList.add('hidden');
+                loginEmail.classList.remove('input-error');
+            }
+
+            // Password validation
+            if (!password) {
+                loginPasswordError.classList.remove('hidden');
+                loginPassword.classList.add('input-error');
+                isValid = false;
+            } else {
+                loginPasswordError.classList.add('hidden');
+                loginPassword.classList.remove('input-error');
+            }
+
+            if (!isValid) return;
+
+            // 🔵 loading start
+            loginBtnText.classList.add('hidden');
+            loginBtnLoader.classList.remove('hidden');
+            loginSubmitBtn.disabled = true;
+
+            // ✅ REAL API CALL
+            fetch("http://localhost:8080/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("Invalid email or password");
+                }
+                return res.json();
+            })
+            .then(data => {
+
+                // save user
+                localStorage.setItem("loggedUser", JSON.stringify(data));
+
+                // success message
+                loginSuccess.classList.remove('hidden');
+
+                // redirect
+                setTimeout(() => {
+                    window.location.href = "project_dashboard.html";
+                }, 1200);
+            })
+            .catch(err => {
+                alert(err.message);
+            })
+            .finally(() => {
+                loginBtnText.classList.remove('hidden');
+                loginBtnLoader.classList.add('hidden');
+                loginSubmitBtn.disabled = false;
+            });
+
+        });
+        // Register Form Validation
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            let isValid = true;
+
+            // Name validation
+            if (!name || name.trim().length < 2) {
+                document.getElementById('registerNameError').classList.remove('hidden');
+                document.getElementById('registerName').classList.add('input-error');
+                isValid = false;
+            } else {
+                document.getElementById('registerNameError').classList.add('hidden');
+                document.getElementById('registerName').classList.remove('input-error');
+            }
+
+            // Email validation
+            if (!email || !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                document.getElementById('registerEmailError').classList.remove('hidden');
+                document.getElementById('registerEmail').classList.add('input-error');
+                isValid = false;
+            } else {
+                document.getElementById('registerEmailError').classList.add('hidden');
+                document.getElementById('registerEmail').classList.remove('input-error');
+            }
+
+            // Password validation
+            if (!password || password.length < 8) {
+                document.getElementById('registerPasswordError').classList.remove('hidden');
+                document.getElementById('registerPassword').classList.add('input-error');
+                isValid = false;
+            } else {
+                document.getElementById('registerPasswordError').classList.add('hidden');
+                document.getElementById('registerPassword').classList.remove('input-error');
+            }
+
+            // Confirm password validation
+            if (password !== confirmPassword) {
+                document.getElementById('confirmPasswordError').classList.remove('hidden');
+                document.getElementById('confirmPassword').classList.add('input-error');
+                isValid = false;
+            } else {
+                document.getElementById('confirmPasswordError').classList.add('hidden');
+                document.getElementById('confirmPassword').classList.remove('input-error');
+            }
+
+            if (isValid) {
+
+                // loading start
+                document.getElementById('registerBtnText').classList.add('hidden');
+                document.getElementById('registerBtnLoader').classList.remove('hidden');
+                document.getElementById('registerSubmitBtn').disabled = true;
+
+                fetch("http://localhost:8080/api/user/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Registration failed");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+
+                    // ✅ STORE API RESPONSE
+                    localStorage.setItem("loggedUser", JSON.stringify(data));
+
+                    console.log("User Saved:", data);
+
+                    // stop loading
+                    document.getElementById('registerBtnText').classList.remove('hidden');
+                    document.getElementById('registerBtnLoader').classList.add('hidden');
+                    document.getElementById('registerSubmitBtn').disabled = false;
+
+                    // success message
+                    document.getElementById('registerSuccess').classList.remove('hidden');
+
+                    // redirect
+                    setTimeout(() => {
+                        window.location.href = "project_dashboard.html";
+                    }, 1500);
+                })
+                .catch(error => {
+
+                    alert(error.message);
+
+                    document.getElementById('registerBtnText').classList.remove('hidden');
+                    document.getElementById('registerBtnLoader').classList.add('hidden');
+                    document.getElementById('registerSubmitBtn').disabled = false;
+                });
+            }
+            });
+
+        // Forgot Password Modal
+        function showForgotPassword() {
+            document.getElementById('forgotPasswordModal').classList.remove('hidden');
+        }
+
+        function closeForgotPassword(event) {
+            if (!event || event.target === event.currentTarget) {
+                document.getElementById('forgotPasswordModal').classList.add('hidden');
+                document.getElementById('resetSuccess').classList.add('hidden');
+                document.getElementById('forgotPasswordForm').reset();
+            }
+        }
+
+        // Forgot Password Form
+        document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simulate API call
+            setTimeout(() => {
+                document.getElementById('resetSuccess').classList.remove('hidden');
+                setTimeout(() => {
+                    closeForgotPassword();
+                }, 2000);
+            }, 1000);
+        });
+
+        // Real-time email validation
+        document.getElementById('loginEmail').addEventListener('blur', function() {
+            const email = this.value;
+            if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                document.getElementById('loginEmailError').classList.remove('hidden');
+                this.classList.add('input-error');
+            } else {
+                document.getElementById('loginEmailError').classList.add('hidden');
+                this.classList.remove('input-error');
+            }
+        });
+
+        document.getElementById('registerEmail').addEventListener('blur', function() {
+            const email = this.value;
+            if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                document.getElementById('registerEmailError').classList.remove('hidden');
+                this.classList.add('input-error');
+            } else {
+                document.getElementById('registerEmailError').classList.add('hidden');
+                this.classList.remove('input-error');
+            }
+        });
+
+        // Confirm password real-time validation
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                document.getElementById('confirmPasswordError').classList.remove('hidden');
+                this.classList.add('input-error');
+            } else {
+                document.getElementById('confirmPasswordError').classList.add('hidden');
+                this.classList.remove('input-error');
+            }
+        });
+    </script>
+    </body>
+</html>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
@@ -23,6 +24,13 @@ public class ProjectController {
                                                ProjectRequestDto projectRequestDto) {
 
         ProjectResponseDto projectResponse = projectService.createProject(projectRequestDto);
+        return ResponseEntity.ok(projectResponse);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProjectById(@PathVariable Long id) {
+
+        ProjectResponseDto projectResponse = projectService.getProjectById(id);
         return ResponseEntity.ok(projectResponse);
     }
 

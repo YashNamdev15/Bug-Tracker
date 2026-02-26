@@ -21,6 +21,9 @@ public class Project {
 
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus status;
+
     @ManyToMany
     @JoinTable(
             name = "user_projects",

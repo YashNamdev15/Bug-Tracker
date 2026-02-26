@@ -2,6 +2,7 @@ package com.softwareTool.bugTracker.dto.ticket;
 
 
 import com.softwareTool.bugTracker.entity.Project;
+import com.softwareTool.bugTracker.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,11 +22,15 @@ public class TicketResponseDto {
 
     private String description;
 
+    private LocalDateTime dueDate;
+
     private String status;
 
     private String priority;
 
     private LocalDateTime createdAt;
+
+    private User assignedUser;
 
     private Project project;
 }

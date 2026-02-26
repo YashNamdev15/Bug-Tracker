@@ -11,6 +11,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -74,6 +76,21 @@ public class UserServiceImpl implements UserService {
                         .build();
 
         return userResponse;
+    }
+
+    @Override
+    public List<UserResponseDto> getUserByProjectId(Long id) {
+        List<UserResponseDto> users = userRepository.findByProjects_Id(id)
+                .stream()
+                .map(user -> UserResponseDto.builder()
+                        .id(user.getId())
+                        .name(user.getName())
+                        .email(user.getEmail())
+                        .password(user.getPassword())
+                        .build())
+                .toList();
+
+        return users;
     }
 
 

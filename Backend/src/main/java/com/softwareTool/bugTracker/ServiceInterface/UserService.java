@@ -5,6 +5,8 @@ import com.softwareTool.bugTracker.dto.user.UserResponseDto;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 
 @Component
 public interface UserService {
@@ -14,4 +16,6 @@ public interface UserService {
     UserResponseDto getUserById(Long id);
 
     UserResponseDto updateUser(Long id, @Valid UserRequestDto userRequest);
+
+    List<UserResponseDto> getUserByProjectId(Long id);
 }

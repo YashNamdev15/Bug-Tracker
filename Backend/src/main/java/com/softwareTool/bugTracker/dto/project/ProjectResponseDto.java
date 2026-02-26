@@ -21,4 +21,6 @@ public class ProjectResponseDto {
 
     private Set<Long> userIds;
 
+    private int ticketCount;
+
 }

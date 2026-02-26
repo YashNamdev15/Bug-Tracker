@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SyncDesk Dashboard</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+
+/* ================= COLOR SYSTEM ================= */
+:root{
+--primary:#6366f1;
+--accent:#ec4899;
+--surface:#ffffffcc;
+--border-soft:rgba(0,0,0,.08);
+}
+
+.dark{
+--surface:#020617cc;
+--border-soft:#334155;
+}
+
+/* ================= BASE ================= */
+body{
+font-family:Inter,system-ui;
+background:#FFFFF0;
+color:#1f2937;
+transition:.3s;
+}
+
+.dark body{
+background:#0f172a;
+color:#e2e8f0;
+}
+
+.header-glass{
+backdrop-filter:blur(12px);
+background:rgba(255,255,255,.6);
+}
+.dark .header-glass{
+background:#020617dd;
+}
+
+.brand{
+background:linear-gradient(90deg,#4f46e5,#ec4899);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+.card{
+border-radius:14px;
+background:#DBE4C9;
+border:1px solid rgba(0,0,0,.08);
+transition:.25s;
+}
+.card:hover{
+transform:translateY(-4px);
+box-shadow:0 12px 25px rgba(0,0,0,.12);
+}
+
+.dark .card{
+background:#1e293b;
+border-color:#334155;
+}
+
+.text-soft{ color:#1f2937; }
+.dark .text-soft{ color:#cbd5e1; }
+
+.progress{
+height:8px;
+background:rgba(255,255,255,.6);
+border-radius:999px;
+overflow:hidden;
+}
+.dark .progress{ background:#334155; }
+
+.progress div{
+height:100%;
+background:linear-gradient(90deg,#6366f1,#ec4899);
+}
+
+.btn-primary{
+display:flex;
+align-items:center;
+gap:8px;
+background:linear-gradient(135deg,#6366f1,#8b5cf6);
+color:white;
+padding:10px 20px;
+border-radius:12px;
+font-weight:600;
+}
+
+/* ================= HEADER ================= */
+
+/* NAV LINKS */
+.nav-link{
+position:relative;
+padding-bottom:4px;
+color:#374151;
+transition:.2s;
+}
+
+.dark .nav-link{
+color:#cbd5e1;
+}
+
+.nav-link:hover{
+color:#6366f1;
+}
+
+/* ACTIVE PAGE LINE */
+.active-link::after{
+content:"";
+position:absolute;
+left:0;
+bottom:-6px;
+width:100%;
+height:2px;
+background:linear-gradient(90deg,#6366f1,#ec4899);
+border-radius:2px;
+}
+
+/* ICON BUTTON */
+.icon-btn{
+padding:6px 10px;
+border-radius:8px;
+transition:.2s;
+}
+
+.icon-btn:hover{
+background:rgba(99,102,241,.12);
+}
+
+.dark .icon-btn:hover{
+background:#1e293b;
+}
+
+/* ================= MODAL ANIMATION ================= */
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(15px) scale(.96);
+}
+to{
+opacity:1;
+transform:translateY(0) scale(1);
+}
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= MODAL ================= -->
+<div id="createProjectModal"
+class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">
+
+<div
+class="w-[440px] rounded-2xl shadow-2xl border
+bg-[var(--surface)] backdrop-blur-xl
+border-[var(--border-soft)]
+p-7 animate-[fadeIn_.25s_ease]">
+
+<!-- Header -->
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-xl font-semibold brand">Create New Project</h3>
+
+<button onclick="closeCreateProjectModal()"
+class="text-xl opacity-60 hover:opacity-100 hover:scale-110 transition">
+✕
+</button>
+</div>
+
+<form id="createProjectForm" class="space-y-5">
+
+<input id="projectName" required
+class="w-full mt-1 px-4 py-2 rounded-xl border
+bg-white/80 dark:bg-slate-800
+text-gray-900 dark:text-white
+placeholder-gray-500
+border-[var(--border-soft)]
+focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+placeholder="Enter project name">
+
+<textarea id="projectDescription" rows="3"
+class="w-full mt-1 px-4 py-2 rounded-xl border
+bg-white/80 dark:bg-slate-800
+text-gray-900 dark:text-white
+placeholder-gray-400
+border-[var(--border-soft)]
+focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+placeholder="Write short description"></textarea>
+
+<div class="flex gap-3 pt-3">
+
+<button type="button"
+onclick="closeCreateProjectModal()"
+class="w-full py-2 rounded-xl border
+border-[var(--border-soft)]
+hover:bg-gray-100 dark:hover:bg-slate-700 transition font-medium">
+Cancel
+</button>
+
+<button type="submit"
+class="w-full btn-primary justify-center shadow-lg">
+🚀 Create Project
+</button>
+
+</div>
+
+</form>
+</div>
+</div>
+
+<!-- ================= HEADER ================= -->
+<header class="header-glass border-b px-10 py-4 flex justify-between items-center">
+
+<!-- LEFT -->
+<div class="flex items-center gap-12">
+
+<h1 onclick="goDashboard()"
+class="text-2xl font-bold brand cursor-pointer">
+WorkSpace
+</h1>
+
+<nav class="flex items-center gap-8 text-sm font-medium">
+
+<a href="dashboard.html" class="nav-link active-link">
+Dashboard
+</a>
+
+<a href="my_tasks.html" class="nav-link">
+My Tasks
+</a>
+
+</nav>
+
+</div>
+
+<!-- RIGHT -->
+<div class="flex items-center gap-4">
+
+<button onclick="toggleDarkMode()" class="icon-btn">
+🌙
+</button>
+
+<img onclick="goProfile()"
+src="https://i.pravatar.cc/40"
+class="w-10 h-10 rounded-full cursor-pointer border hover:scale-105 transition">
+
+</div>
+
+</header>
+
+<!-- MAIN (UNCHANGED) -->
+<main class="max-w-7xl mx-auto px-6 py-8">
+
+<div class="grid md:grid-cols-4 gap-6 mb-10">
+
+<div class="card p-6">
+<p class="text-soft text-sm">Total Projects</p>
+<h2 id="projectCount" class="text-3xl font-bold">0</h2>
+</div>
+
+<div class="card p-6">
+<p class="text-soft text-sm">Active Projects</p>
+<h2 id="activeProjectsCount" class="text-3xl font-bold">0</h2>
+</div>
+
+<div class="card p-6">
+<p class="text-soft text-sm">Completed Projects</p>
+<h2 id="completedProjectsCount" class="text-3xl font-bold">0</h2>
+</div>
+
+<div class="card p-6">
+<p class="text-soft text-sm">Average Progress</p>
+<h2 id="avgProgress" class="text-3xl font-bold">0%</h2>
+</div>
+
+</div>
+
+<div class="flex justify-between mb-6">
+<h2 class="text-2xl font-bold">Your Projects</h2>
+
+<button onclick="openCreateProjectModal()" class="btn-primary">
+＋ New Project
+</button>
+</div>
+
+<div id="projectsGrid"
+class="grid md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+
+<div id="emptyState"
+class="hidden text-center mt-16 text-soft">
+No projects yet 🚀
+</div>
+
+</main>
+
+<!-- YOUR JS REMAINS EXACTLY SAME -->
+<script>
+/* JS unchanged — keeping your logic safe */
+const API="http://localhost:8080/api";
+
+function toggleDarkMode(){
+document.documentElement.classList.toggle("dark");
+localStorage.setItem("darkMode",
+document.documentElement.classList.contains("dark"));
+}
+
+if(localStorage.getItem("darkMode")==="true")
+document.documentElement.classList.add("dark");
+
+function goProfile(){ window.location.href="profile.html"; }
+
+function getUser(){
+const u=localStorage.getItem("loggedUser");
+return u?JSON.parse(u):null;
+}
+
+function openCreateProjectModal(){
+createProjectModal.classList.remove("hidden");
+}
+function closeCreateProjectModal(){
+createProjectModal.classList.add("hidden");
+}
+
+/* ================= LOAD PROJECTS ================= */
+async function loadProjects(){
+
+const user = getUser();
+let url = `${API}/projects`;
+
+if(user?.id){
+    url = `${API}/projects/user/${user.id}`;
+}
+
+try{
+
+const res = await fetch(url);
+const projects = await res.json();
+
+/* counters */
+document.getElementById("projectCount").textContent = projects.length;
+
+const active = projects.filter(p => !p.status || p.status === "ACTIVE");
+document.getElementById("activeProjectsCount").textContent = active.length;
+
+const completed = projects.filter(p => p.status === "COMPLETED");
+document.getElementById("completedProjectsCount").textContent = completed.length;
+
+const avg = Math.round(
+projects.reduce((s,p)=>s+(p.progress||0),0)
+/ (projects.length || 1)
+);
+
+document.getElementById("avgProgress").textContent = avg + "%";
+
+/* render cards */
+renderProjects(projects);
+
+}catch(err){
+console.error("Load project failed",err);
+}
+}
+
+
+/* ================= RENDER PROJECTS ================= */
+function renderProjects(projects){
+
+const grid = document.getElementById("projectsGrid");
+const empty = document.getElementById("emptyState");
+
+grid.innerHTML = "";
+
+if(!projects.length){
+empty.classList.remove("hidden");
+return;
+}
+
+empty.classList.add("hidden");
+
+projects.forEach(p=>{
+
+const card=document.createElement("div");
+card.className="card p-6";
+
+card.innerHTML=`
+<h3 class="font-semibold text-lg">${p.name}</h3>
+<p class="text-sm text-soft mb-4">${p.description||""}</p>
+
+<div class="mb-4">
+<div class="flex justify-between text-sm mb-1">
+<span>Progress</span>
+<span>${p.progress||0}%</span>
+</div>
+<div class="progress">
+<div style="width:${p.progress||0}%"></div>
+</div>
+</div>
+
+<div class="flex justify-between items-center">
+<span class="text-xs px-3 py-1 rounded bg-white/70">
+${p.status||"ACTIVE"}
+</span>
+
+<a href="project_workspace.html?projectId=${p.id}"
+class="underline font-medium hover:text-indigo-600 transition">
+Open →
+</a>
+</div>
+`;
+
+grid.appendChild(card);
+});
+}
+
+
+/* ================= CREATE PROJECT SUBMIT ================= */
+document.addEventListener("DOMContentLoaded", () => {
+
+loadProjects();
+
+const form = document.getElementById("createProjectForm");
+
+form.addEventListener("submit", async (e) => {
+
+e.preventDefault();
+
+const user = getUser();
+
+if(!user){
+alert("User missing in localStorage");
+return;
+}
+
+const projectData = {
+name: document.getElementById("projectName").value,
+description: document.getElementById("projectDescription").value,
+userIds: [user.id]
+};
+
+try{
+
+const res = await fetch(`${API}/projects`,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body: JSON.stringify(projectData)
+});
+
+if(!res.ok) throw new Error("API failed");
+
+closeCreateProjectModal();
+form.reset();
+loadProjects();
+
+}catch(err){
+console.error(err);
+alert("Project creation failed");
+}
+
+});
+
+});
+
+function goDashboard(){
+window.location.href="project_dashboard.html"; // this same page
+}
+
+function goMyTasks(){
+window.location.href="my_tasks.html";
+}
+
+</script>
+
+</body>
+</html>

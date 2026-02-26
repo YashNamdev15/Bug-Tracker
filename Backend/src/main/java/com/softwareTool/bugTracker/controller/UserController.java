@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -42,6 +45,13 @@ public class UserController {
 
         UserResponseDto user = userService.updateUser(id, userRequest);
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<?> getUserByProjectId(@PathVariable Long projectId) {
+
+        List<UserResponseDto> users = userService.getUserByProjectId(projectId);
+        return ResponseEntity.ok(users);
     }
 
 }

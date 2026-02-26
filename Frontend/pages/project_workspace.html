@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Project Workspace</title>
+
+<style>
+body{
+margin:0;
+font-family:Segoe UI,sans-serif;
+background:linear-gradient(
+180deg,
+#f1f1ec 0%,
+#e8e6d8 50%,
+#c7ceb2 100%
+);
+color:#2f2f2f;
+}
+
+/* TOPBAR */
+.topbar{
+height:65px;
+background:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 30px;
+box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.status{
+background:#dcfce7;
+color:#166534;
+padding:5px 12px;
+border-radius:20px;
+font-size:13px;
+}
+
+/* LAYOUT */
+.container{display:flex;height:calc(100vh - 65px);}
+
+.sidebar{
+width:240px;
+background:#f4f3ea;
+border-right:1px solid rgba(0,0,0,.08);
+padding:20px;
+}
+
+.main{
+flex:1;
+padding:25px;
+}
+
+.toolbar{
+display:flex;
+justify-content:space-between;
+margin-bottom:20px;
+}
+
+.create-btn{
+background:#2563eb;
+color:white;
+border:none;
+padding:10px 16px;
+border-radius:8px;
+cursor:pointer;
+}
+
+/* BOARD */
+.board{display:flex;gap:20px;}
+
+.column{
+flex:1;
+background:#d7dcc5;
+border:1px solid rgba(0,0,0,.08);
+padding:18px;
+border-radius:16px;
+min-height:420px;
+}
+
+.card{
+background:#ffffffcc;
+backdrop-filter:blur(6px);
+border:1px solid rgba(0,0,0,.05);
+}
+
+.card:active{cursor:grabbing;}
+
+.priority-bar{
+height:4px;
+margin-top:8px;
+border-radius:6px;
+}
+
+/* ===== MODERN TICKET CARD ===== */
+
+.card{
+background:#fbfbf6;
+border-radius:14px;
+border:1px solid rgba(0,0,0,.08);
+padding:14px;
+box-shadow:0 4px 10px rgba(0,0,0,.06);
+transition:.2s;
+}
+
+.card:hover{
+transform:translateY(-3px);
+box-shadow:0 10px 18px rgba(0,0,0,.12);
+}
+
+/* HEADER */
+.ticket-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:6px;
+}
+
+.ticket-id{
+font-size:12px;
+font-weight:600;
+color:#6366f1;
+letter-spacing:.4px;
+}
+
+/* TITLE */
+.ticket-title{
+font-size:15px;
+font-weight:600;
+color:#111827;
+margin-bottom:10px;
+}
+
+/* PRIORITY DOT */
+.priority-dot{
+width:10px;
+height:10px;
+border-radius:50%;
+}
+
+/* FOOTER */
+.ticket-footer{
+display:flex;
+justify-content:flex-end;
+}
+
+.ticket-status{
+font-size:11px;
+padding:3px 8px;
+border-radius:999px;
+background:#eef2ff;
+color:#4f46e5;
+font-weight:500;
+}
+
+
+.ticket-meta{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:10px;
+}
+
+.ticket-assignee{
+display:flex;
+align-items:center;
+gap:6px;
+font-size:12px;
+opacity:.8;
+}
+
+.ticket-avatar{
+width:24px;
+height:24px;
+border-radius:50%;
+background:#2563eb;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:11px;
+font-weight:600;
+}
+
+.ticket-due{
+font-size:12px;
+opacity:.7;
+}
+/* MODAL */
+
+.modal-box h3{
+margin-bottom:18px;
+font-size:20px;
+font-weight:600;
+color:#2f2f2f;
+}
+
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.4);
+justify-content:center;
+align-items:center;
+}
+
+.modal-box{
+background:#fbfbf6;
+padding:28px 34px;   /* ← left/right padding increased */
+width:420px;
+border-radius:18px;
+border:1px solid rgba(0,0,0,.08);
+box-shadow:0 20px 45px rgba(0,0,0,.18);
+animation:modalPop .25s ease;
+}
+@keyframes modalPop{
+from{
+opacity:0;
+transform:translateY(20px) scale(.95);
+}
+to{
+opacity:1;
+transform:translateY(0) scale(1);
+}
+}
+
+.modal-box input,
+.modal-box textarea,
+.modal-box select{
+width:100%;
+margin:10px 0;
+padding:10px 12px;
+border-radius:10px;
+border:1px solid #d6d3c4;
+background:#f4f3ea;
+outline:none;
+font-size:14px;
+transition:.2s;
+}
+
+.modal-box input:focus,
+.modal-box textarea:focus,
+.modal-box select:focus{
+border-color:#6b7a52;
+box-shadow:0 0 0 2px rgba(107,122,82,.2);
+background:#ffffff;
+}
+
+.modal-box button{
+padding:8px 14px;
+border-radius:8px;
+border:none;
+cursor:pointer;
+font-weight:500;
+}
+
+.modal-box button:first-child{
+background:#e7e5d6;
+}
+
+.modal-box button:last-child{
+background:#6b7a52;
+color:white;
+}
+
+.modal-box button:last-child:hover{
+background:#556341;
+}
+
+/* ===== STATS SECTION ===== */
+.stats{
+display:flex;
+gap:15px;
+margin-bottom:20px;
+}
+
+.stat-card{
+flex:1;
+background:white;
+padding:14px;
+border-radius:10px;
+box-shadow:0 3px 8px rgba(0,0,0,.08);
+}
+
+.stat-card h4{
+margin:0;
+font-size:13px;
+color:#6b7280;
+}
+
+.stat-card p{
+margin:6px 0 0;
+font-size:22px;
+font-weight:600;
+}
+
+/* ===== TEAM SIDEBAR ===== */
+
+.team-list{
+display:flex;
+flex-direction:column;   /* ⭐ THIS FIXES EVERYTHING */
+gap:6px;
+}
+
+.avatar{
+width:32px;
+height:32px;
+border-radius:50%;
+background:linear-gradient(135deg,#6366f1,#4f46e5);
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:13px;
+font-weight:600;
+box-shadow:0 2px 6px rgba(0,0,0,.2);
+cursor:pointer;
+transition:.2s;
+}
+
+.avatar:hover{
+transform:scale(1.08);
+}
+
+.team-item{
+display:flex;
+align-items:center;
+gap:12px;
+padding:4px 6px;
+border-radius:8px;
+transition:.2s;
+}
+
+.team-item:hover{
+background:#f3f4f6;
+}
+
+.member-name{
+font-size:15px;
+font-weight:500;
+color:#111827;
+}
+
+
+/* ===== MEMBER MODAL MODERN UI ===== */
+
+.member-box{
+width:420px;
+animation:pop .2s ease;
+}
+
+@keyframes pop{
+from{transform:scale(.9);opacity:.5;}
+to{transform:scale(1);opacity:1;}
+}
+
+.search-input{
+width:100%;
+padding:10px;
+border-radius:10px;
+border:1px solid #d1d5db;
+margin-top:10px;
+outline:none;
+}
+
+.search-input:focus{
+border-color:#6366f1;
+box-shadow:0 0 0 2px rgba(99,102,241,.2);
+}
+
+.search-results{
+margin-top:12px;
+max-height:160px;
+overflow-y:auto;
+}
+
+.user-card{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:10px;
+border-radius:10px;
+background:#f9fafb;
+margin-bottom:8px;
+transition:.2s;
+}
+
+.user-card:hover{
+background:#eef2ff;
+}
+
+.user-info{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.user-avatar{
+width:34px;
+height:34px;
+border-radius:50%;
+background:linear-gradient(135deg,#6366f1,#4f46e5);
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:600;
+}
+
+.member-chip{
+background:#e0e7ff;
+padding:6px 10px;
+border-radius:20px;
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.selected-container{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-top:8px;
+}
+
+.save-btn{
+background:#2563eb;
+color:white;
+border:none;
+padding:8px 14px;
+border-radius:8px;
+cursor:pointer;
+}
+
+/* PROFESSIONAL REMOVE BUTTON */
+
+.remove-member-btn{
+margin-left:auto;
+border:none;
+background:transparent;
+color:#9ca3af;
+font-size:18px;
+cursor:pointer;
+padding:4px 8px;
+border-radius:6px;
+transition:.2s;
+}
+
+.remove-member-btn:hover{
+background:#fee2e2;
+color:#dc2626;
+}
+
+/*ADD MEMBER BUTTON*/
+
+.add-member-btn{
+width:100%;
+margin:10px 0;
+padding:9px;
+border:none;
+background:#4f46e5;
+color:white;
+border-radius:10px;
+font-weight:500;
+cursor:pointer;
+transition:.2s;
+}
+
+.add-member-btn:hover{
+background:#4338ca;
+}
+
+/* ===== PREMIUM TOOLTIP ===== */
+
+.remove-member-btn{
+position:relative;
+margin-left:auto;
+border:none;
+background:transparent;
+color:#9ca3af;
+font-size:18px;
+cursor:pointer;
+padding:6px;
+border-radius:8px;
+transition:.2s;
+}
+
+.remove-member-btn:hover{
+background:#fee2e2;
+color:#dc2626;
+}
+
+/* TOOLTIP BOX */
+.remove-member-btn::after{
+content:attr(data-tooltip);
+position:absolute;
+left:120%;   /* ✅ moved to right side */
+top:50%;
+transform:translateY(-50%) translateX(-6px);
+background:#111827;
+color:#fff;
+font-size:12px;
+padding:6px 10px;
+border-radius:8px;
+white-space:nowrap;
+opacity:0;
+pointer-events:none;
+box-shadow:0 6px 18px rgba(0,0,0,.25);
+transition:
+opacity .18s ease,
+transform .18s ease;
+transition-delay:.15s;
+}
+
+/* TOOLTIP ARROW */
+.remove-member-btn::before{
+content:"";
+position:absolute;
+left:110%;   /* ✅ arrow also right side */
+top:50%;
+transform:translateY(-50%);
+border-width:6px;
+border-style:solid;
+border-color:transparent #111827 transparent transparent;
+opacity:0;
+transition:opacity .18s ease;
+transition-delay:.15s;
+}
+
+/* SHOW */
+.remove-member-btn:hover::after,
+.remove-member-btn:hover::before{
+opacity:1;
+transform:translateY(-50%) translateX(0);
+}
+/* SHOW TOOLTIP */
+.remove-member-btn:hover::after,
+.remove-member-btn:hover::before{
+opacity:1;
+transform:translateY(-50%) translateX(0);
+}
+
+/* ===== CLEAN PROJECT HEADER ===== */
+
+.header{
+height:70px;
+background:#f4f3ea;
+border-bottom:1px solid rgba(0,0,0,.08);
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 24px;
+}
+
+.header-left{
+display:flex;
+align-items:center;
+gap:18px;
+}
+
+/* BACK BUTTON */
+.back-btn{
+border:none;
+background:#f3f4f6;
+width:36px;
+height:36px;
+border-radius:8px;
+cursor:pointer;
+font-size:18px;
+transition:.2s;
+}
+
+.back-btn:hover{
+background:#e5e7eb;
+}
+
+/* LOGO */
+.logo-section{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.brand{
+background:linear-gradient(90deg,#4f46e5,#ec4899);
+-webkit-background-clip:text;
+color:transparent;
+transition:.25s;
+}
+
+.brand:hover{
+opacity:.8;
+}
+
+/* PROJECT INFO */
+.project-info{
+display:flex;
+align-items:center;
+gap:12px;
+margin-left:10px;
+}
+
+.divider{
+color:#d1d5db;
+font-weight:300;
+font-size:22px;
+}
+
+/* RIGHT SIDE */
+.header-right{
+display:flex;
+align-items:center;
+}
+
+.search-bar{
+padding:8px 12px;
+border-radius:10px;
+border:1px solid #d1d5db;
+width:240px;
+outline:none;
+}
+
+.search-bar:focus{
+border-color:#6366f1;
+box-shadow:0 0 0 2px rgba(99,102,241,.15);
+}
+
+#OPEN,
+#IN_PROGRESS,
+#RESOLVED{
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+/* MENU SWITCHING */
+
+.menu-item{
+padding:8px 10px;
+border-radius:8px;
+cursor:pointer;
+margin-bottom:6px;
+transition:.2s;
+}
+
+.menu-item:hover{
+background:#e7e5d6;
+}
+
+.active-menu{
+background:#dcdacb;
+font-weight:600;
+}
+
+/* LIST VIEW */
+/* ===== MODERN LIST VIEW ===== */
+
+.ticket-list{
+background:#fbfbf6;
+border-radius:16px;
+overflow:hidden;
+border:1px solid rgba(0,0,0,.08);
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.ticket-row{
+display:grid;
+grid-template-columns:
+140px   /* ID */
+2fr     /* Title */
+140px   /* Type */
+140px   /* Priority */
+160px   /* Status */
+180px   /* Assignee */
+150px;  /* Due date */
+
+align-items:center;
+padding:14px 18px;
+border-bottom:1px solid rgba(0,0,0,.06);
+transition:.2s;
+}
+
+.ticket-row.header{
+background:#e7e5d6;
+font-weight:600;
+}
+
+.ticket-row:last-child{
+border-bottom:none;
+}
+
+.ticket-row:not(.header):hover{
+background:#f3f2e8;
+transform:scale(1.005);
+}
+
+/* status badge */
+.status-badge{
+padding:4px 10px;
+border-radius:999px;
+font-size:12px;
+font-weight:600;
+}
+
+.status-open{
+background:#e0e7ff;
+color:#4f46e5;
+}
+
+.status-progress{
+background:#dbeafe;
+color:#2563eb;
+}
+
+.status-done{
+background:#dcfce7;
+color:#166534;
+}
+
+/* priority */
+.priority-pill{
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.priority-dot{
+width:9px;
+height:9px;
+border-radius:50%;
+}
+
+/*ADD NEW BADGE + ASSIGNEE*/
+.badge{
+padding:5px 12px;
+border-radius:999px;
+font-size:12px;
+font-weight:600;
+display:inline-block;
+}
+
+/* TYPE */
+.type-bug{background:#fee2e2;color:#dc2626;}
+.type-feature{background:#dbeafe;color:#2563eb;}
+
+/* PRIORITY */
+.priority-high{background:#fee2e2;color:#dc2626;}
+.priority-medium{background:#fef3c7;color:#b45309;}
+.priority-low{background:#dcfce7;color:#166534;}
+
+/* ASSIGNEE */
+.assignee{
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.assignee-avatar{
+width:28px;
+height:28px;
+border-radius:50%;
+background:#2563eb;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:12px;
+font-weight:600;
+}
+
+.assign-user{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:10px;
+border-radius:10px;
+background:#f9fafb;
+margin-bottom:8px;
+cursor:pointer;
+transition:.2s;
+}
+
+.assign-user:hover{
+background:#eef2ff;
+}
+
+/* due date below title */
+.ticket-due-row{
+font-size:12px;
+opacity:.75;
+margin-top:4px;
+display:flex;
+justify-content:flex-end;
+}
+
+/* bottom row */
+.ticket-bottom{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+<div class="header-left">
+
+<button class="back-btn" onclick="goBack()">←</button>
+
+<h1 onclick="goDashboard()"
+class="brand text-lg font-semibold cursor-pointer">
+WorkSpace
+</h1>
+
+<div class="project-info">
+<span class="divider">|</span>
+<b id="projectTitle">Loading...</b>
+<span id="projectStatus" class="status">ACTIVE</span>
+</div>
+
+</div>
+
+<div class="header-right">
+<input id="searchInput"
+class="search-bar"
+placeholder="Search tickets...">
+</div>
+
+</div>
+
+<div class="container">
+
+<div class="sidebar">
+
+<div class="menu-item active-menu" onclick="showBoardView()">📋 Board</div>
+<div class="menu-item" onclick="showListView()">📄 List</div>
+
+<h4 style="margin-top:25px;color:#6b7280;">TEAM MEMBERS</h4>
+
+<div id="memberCount"
+style="font-size:13px;color:#6b7280;margin-bottom:10px;">
+0 Members
+</div>
+
+<div id="teamMembers" class="team-list"></div>
+
+<button class="add-member-btn" onclick="openMemberModal()">
++ Add Member
+</button>
+
+</div>
+
+<div class="main">
+
+<div class="toolbar">
+<h2>Project Tickets</h2>
+<button class="create-btn" onclick="openModal()">+ Create Ticket</button>
+</div>
+
+<!-- ===== PROJECT STATS ===== -->
+<div class="stats">
+
+<div class="stat-card">
+<h4>Total Tickets</h4>
+<p id="totalCount">0</p>
+</div>
+
+<div class="stat-card">
+<h4>Open</h4>
+<p id="openCount">0</p>
+</div>
+
+<div class="stat-card">
+<h4>In Progress</h4>
+<p id="progressCount">0</p>
+</div>
+
+<div class="stat-card">
+<h4>Completed</h4>
+<p id="doneCount">0</p>
+</div>
+
+</div>
+
+<div id="boardView" class="board">
+
+<div class="column" data-status="OPEN">
+<h3>To Do</h3>
+<div id="OPEN"></div>
+</div>
+
+<div class="column" data-status="IN_PROGRESS">
+<h3>In Progress</h3>
+<div id="IN_PROGRESS"></div>
+</div>
+
+<div class="column" data-status="RESOLVED">
+<h3>Done</h3>
+<div id="RESOLVED"></div>
+</div>
+
+</div>
+
+<div id="listView" style="display:none">
+<div id="ticketTableBody"></div>
+</div>
+
+</div>
+</div>
+
+<!-- MODAL -->
+<div id="ticketModal" class="modal">
+<div class="modal-box">
+
+<h3>Create Ticket</h3>
+
+<input id="ticketTitle" placeholder="Title">
+<textarea id="ticketDesc" placeholder="Description"></textarea>
+
+<select id="ticketStatus">
+<option value="OPEN">OPEN</option>
+<option value="IN_PROGRESS">IN_PROGRESS</option>
+<option value="RESOLVED">RESOLVED</option>
+</select>
+
+<select id="ticketPriority">
+<option value="LOW">LOW</option>
+<option value="MEDIUM">MEDIUM</option>
+<option value="HIGH">HIGH</option>
+</select>
+
+<h4>Due Date</h4>
+<input
+type="date"
+id="ticketDueDate"
+placeholder="Due Date">
+
+<div style="text-align:right">
+<button onclick="closeModal()">Cancel</button>
+<button onclick="createTicket()">Create</button>
+</div>
+
+</div>
+</div>
+
+<!-- MEMBER MODAL -->
+<div id="memberModal" class="modal">
+<div class="modal-box member-box">
+
+<h3>Add Project Members</h3>
+
+<input id="searchUserId"
+class="search-input"
+placeholder="Search user by ID..."
+oninput="liveSearchUser()">
+
+<div id="searchResult" class="search-results"></div>
+
+<h4 class="selected-title">Selected Members</h4>
+<div id="selectedUsers" class="selected-container"></div>
+
+<div style="text-align:right;margin-top:18px;">
+<button onclick="closeMemberModal()">Cancel</button>
+<button class="save-btn" onclick="saveMembers()">Save Members</button>
+</div>
+
+</div>
+</div>
+
+<!-- ===== TICKET DETAILS MODAL ===== -->
+<div id="ticketDetailsModal" class="modal">
+
+<div class="modal-box" style="width:520px; position:relative;">
+
+<!-- CLOSE BUTTON -->
+<button onclick="closeTicketDetails()"
+style="
+position:absolute;
+top:12px;
+right:14px;
+background:none;
+border:none;
+font-size:20px;
+cursor:pointer;">✕</button>
+
+<h3 id="detailTitle">Ticket</h3>
+
+<p id="detailDesc" style="opacity:.7;margin-top:6px;"></p>
+
+<div style="margin-top:15px">
+
+<b>Status:</b>
+<span id="detailStatus"></span>
+<br><br>
+
+<b>Priority:</b>
+<span id="detailPriority"></span>
+<br><br>
+
+<b>Due Date:</b>
+<span id="detailDue"></span>
+<br><br>
+
+<b>Created:</b>
+<span id="detailCreated"></span>
+
+</div>
+
+<!-- ASSIGNEE -->
+<div style="margin-top:20px">
+<h4>Assigned To</h4>
+
+<div id="assignedUserBox"
+style="margin:8px 0; opacity:.7;">
+Unassigned
+</div>
+
+<button class="add-member-btn"
+onclick="openAssignModal()">
+Assign Ticket
+</button>
+
+</div>
+
+</div>
+</div>
+
+<!-- ===== ASSIGN TICKET MODAL ===== -->
+<div id="assignModal" class="modal">
+
+<div class="modal-box" style="width:420px;">
+
+<h3>Assign Ticket</h3>
+
+<div id="assignUserList"></div>
+
+<div style="text-align:right;margin-top:15px;">
+<button class="save-btn" onclick="closeAssignModal()">Cancel</button>
+</div>
+
+</div>
+</div>
+
+<script>
+
+const API="http://localhost:8080/api";
+const projectId=new URLSearchParams(window.location.search).get("projectId");
+
+let tickets=[];
+let selectedMemberIds = new Set();
+
+
+/* LOAD PROJECT */
+async function loadProject(){
+
+const res = await fetch(`${API}/projects/${projectId}`);
+const p = await res.json();
+
+projectTitle.textContent = p.name;
+projectStatus.textContent = p.status || "ACTIVE";
+
+/* ===== LOAD TEAM MEMBERS WITH NAMES ===== */
+
+const teamContainer = document.getElementById("teamMembers");
+teamContainer.innerHTML = "";
+
+try{
+
+const userRes = await fetch(`${API}/user/project/${projectId}`);
+const users = await userRes.json();
+
+if(users && users.length){
+
+document.getElementById("memberCount")
+.innerText = users.length + " Members";
+
+users.forEach(user => {
+
+const row = document.createElement("div");
+row.className = "team-item";
+
+const avatar = document.createElement("div");
+avatar.className = "avatar";
+avatar.innerText = user.name.charAt(0).toUpperCase();
+
+const name = document.createElement("div");
+name.className = "member-name";
+name.innerText = user.name;
+
+const removeBtn=document.createElement("button");
+removeBtn.className="remove-member-btn";
+removeBtn.innerHTML="✕";
+removeBtn.setAttribute("data-tooltip","Remove member");
+
+removeBtn.onclick=()=>removeMember(user.id);
+
+row.appendChild(avatar);
+row.appendChild(name);
+row.appendChild(removeBtn);
+
+teamContainer.appendChild(row);
+
+});
+
+}else{
+document.getElementById("memberCount").innerText="No Members";
+}
+
+}catch(err){
+console.error("Failed loading users",err);
+document.getElementById("memberCount").innerText="Members unavailable";
+}
+
+}
+
+/* LOAD TICKETS */
+async function loadTickets(){
+const res=await fetch(`${API}/tickets/project/${projectId}`);
+tickets=await res.json();
+renderTickets();
+updateStats();
+}
+
+/* RENDER */
+function renderTickets(){
+
+["OPEN","IN_PROGRESS","RESOLVED"].forEach(c=>{
+document.getElementById(c).innerHTML="";
+});
+
+const search=searchInput.value.toLowerCase();
+
+const filtered = tickets.filter(t =>
+t.title.toLowerCase().includes(search)
+);
+
+filtered.forEach(t=>{
+
+let column=t.status;
+if(column==="REOPENED") column="OPEN";
+if(column==="CLOSED") column="RESOLVED";
+
+let color="#94a3b8";
+if(t.priority==="HIGH") color="#ef4444";
+if(t.priority==="MEDIUM") color="#f59e0b";
+if(t.priority==="LOW") color="#22c55e";
+
+const div=document.createElement("div");
+div.className="card";
+div.draggable=true;
+div.dataset.id=t.id;
+
+const assigneeInitial =
+t.assignedUser?.name
+? t.assignedUser.name.charAt(0).toUpperCase()
+: "U";
+
+const assigneeName =
+t.assignedUser?.name || "Unassigned";
+
+const dueDate =
+t.dueDate
+? new Date(t.dueDate).toLocaleDateString()
+: "-";
+
+div.innerHTML = `
+<div class="ticket-header">
+    <span class="ticket-id">TICKET-${t.id}</span>
+    <span class="priority-dot" style="background:${color}"></span>
+</div>
+
+<div class="ticket-title">${t.title}</div>
+
+<!-- DUE DATE ROW -->
+${
+    t.dueDate
+    ? `
+    <div class="ticket-due-row">
+        📅 <b>Due:</b>
+        ${new Date(t.dueDate).toLocaleDateString()}
+    </div>
+    `
+    : ""
+}
+
+<!-- BOTTOM ROW -->
+<div class="ticket-bottom">
+
+    ${
+        t.assignedUser
+        ? `
+        <div class="ticket-assignee">
+            <div class="ticket-avatar">
+                ${t.assignedUser.name.charAt(0).toUpperCase()}
+            </div>
+            ${t.assignedUser.name}
+        </div>
+        `
+        : `<div class="ticket-assignee">Unassigned</div>`
+    }
+
+    <span class="ticket-status">
+        ${t.status.replace("_"," ")}
+    </span>
+
+</div>
+`;
+
+div.addEventListener("dragstart",e=>{
+e.dataTransfer.setData("ticketId",t.id);
+});
+
+div.addEventListener("click",(e)=>{
+if(e.target.closest(".priority-dot")) return;
+openTicketDetails(t);
+});
+
+document.getElementById(column).appendChild(div);
+});
+
+renderListTickets();
+}
+
+/* DRAG DROP (BACKEND UPDATE) */
+document.querySelectorAll(".column").forEach(column=>{
+
+column.addEventListener("dragover",e=>e.preventDefault());
+
+column.addEventListener("drop",async e=>{
+e.preventDefault();
+
+const ticketId=e.dataTransfer.getData("ticketId");
+const newStatus=column.dataset.status;
+
+await fetch(`${API}/tickets/status/${ticketId}`,{
+method:"PUT",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({status:newStatus})
+});
+
+loadTickets();
+});
+});
+
+/* MODAL */
+function openModal(){ ticketModal.style.display="flex"; }
+function closeModal(){ ticketModal.style.display="none"; }
+
+/* CREATE */
+async function createTicket(){
+
+await fetch(`${API}/tickets/project/${projectId}`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+title:ticketTitle.value,
+description:ticketDesc.value,
+status:ticketStatus.value,
+priority:ticketPriority.value,
+dueDate: ticketDueDate.value
+? ticketDueDate.value + "T00:00:00"
+: null
+})
+});
+
+closeModal();
+loadTickets();
+}
+
+searchInput.addEventListener("input",renderTickets);
+
+/* INIT */
+document.addEventListener("DOMContentLoaded",()=>{
+loadProject();
+loadTickets();
+});
+
+
+/* STATS */
+function updateStats(){
+
+const total = tickets.length;
+
+const open = tickets.filter(t => t.status === "OPEN").length;
+
+const progress = tickets.filter(
+t => t.status === "IN_PROGRESS"
+).length;
+
+const done = tickets.filter(
+t => t.status === "RESOLVED" || t.status === "CLOSED"
+).length;
+
+document.getElementById("totalCount").innerText = total;
+document.getElementById("openCount").innerText = open;
+document.getElementById("progressCount").innerText = progress;
+document.getElementById("doneCount").innerText = done;
+}
+
+/* REMOVE MEMBER */
+async function removeMember(userId){
+
+await fetch(
+`${API}/projects/${projectId}/members/${userId}`,
+{ method:"DELETE" }
+);
+
+loadProject();
+}
+
+
+/* ===== MEMBER MODAL ===== */
+
+function openMemberModal(){
+memberModal.style.display="flex";
+selectedMemberIds.clear();
+document.getElementById("selectedUsers").innerHTML="";
+document.getElementById("searchResult").innerHTML="";
+document.getElementById("searchUserId").value="";
+}
+
+function closeMemberModal(){
+memberModal.style.display="none";
+}
+
+
+/* SEARCH USER BY ID */
+let searchTimeout;
+
+function liveSearchUser(){
+
+clearTimeout(searchTimeout);
+
+searchTimeout=setTimeout(async ()=>{
+
+const userId=document.getElementById("searchUserId").value;
+
+if(!userId){
+searchResult.innerHTML="";
+return;
+}
+
+try{
+
+const res=await fetch(`${API}/user/${userId}`);
+if(!res.ok){
+searchResult.innerHTML="";
+return;
+}
+
+const user=await res.json();
+
+searchResult.innerHTML=`
+<div class="user-card">
+
+<div class="user-info">
+<div class="user-avatar">
+${user.name.charAt(0).toUpperCase()}
+</div>
+
+<div>
+<b>${user.name}</b><br>
+<small>ID: ${user.id}</small>
+</div>
+</div>
+
+<button onclick="addMember(${user.id})">
+Add
+</button>
+
+</div>
+`;
+
+}catch(e){
+console.error(e);
+}
+
+},400);
+}
+
+
+/* ADD MEMBER */
+function addMember(id,name){
+
+if(selectedMemberIds.has(id)) return;
+
+selectedMemberIds.add(id);
+renderSelectedMembers();
+}
+
+
+/* RENDER SELECTED MEMBERS */
+function renderSelectedMembers(){
+
+selectedUsers.innerHTML="";
+
+selectedMemberIds.forEach(id=>{
+
+const chip=document.createElement("div");
+chip.className="member-chip";
+
+chip.innerHTML=`
+<span>User ${id}</span>
+<span style="cursor:pointer"
+onclick="removeSelected(${id})">❌</span>
+`;
+
+selectedUsers.appendChild(chip);
+});
+}
+
+/* REMOVE FROM SELECTION */
+function removeSelected(id){
+selectedMemberIds.delete(id);
+renderSelectedMembers();
+}
+
+
+/* SAVE MEMBERS */
+async function saveMembers(){
+
+await fetch(`${API}/projects/${projectId}/add-member`,{
+method:"PUT",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+userIds:[...selectedMemberIds]
+})
+});
+
+closeMemberModal();
+loadProject();
+}
+
+/* GO BACK*/
+function goBack(){
+window.history.back();
+}
+
+function goDashboard(){
+window.location.href="project_dashboard.html";
+}
+
+/* VIEW SWITCH*/
+function showBoardView(){
+document.getElementById("boardView").style.display="flex";
+document.getElementById("listView").style.display="none";
+setActiveMenu(0);
+}
+
+function showListView(){
+document.getElementById("boardView").style.display="none";
+document.getElementById("listView").style.display="block";
+renderListTickets();
+setActiveMenu(1);
+}
+
+function setActiveMenu(index){
+document.querySelectorAll(".menu-item")
+.forEach((el,i)=>{
+el.classList.toggle("active-menu", i===index);
+});
+}
+
+/*RENDER LIST VIEW*/
+function renderListTickets(){
+
+const container=document.getElementById("ticketTableBody");
+
+container.innerHTML=`
+<div class="ticket-list">
+
+<div class="ticket-row header">
+<div>ID</div>
+<div>Title</div>
+<div>Type</div>
+<div>Priority</div>
+<div>Status</div>
+<div>Assignee</div>
+<div>Due Date</div>
+</div>
+
+${tickets.map(t=>{
+
+/* TYPE CLASS */
+let typeClass="type-feature";
+if(t.type==="BUG") typeClass="type-bug";
+
+/* PRIORITY CLASS */
+let priorityClass="priority-low";
+if(t.priority==="MEDIUM") priorityClass="priority-medium";
+if(t.priority==="HIGH") priorityClass="priority-high";
+
+return `
+<div class="ticket-row">
+
+<div>TICKET-${t.id}</div>
+
+<div>
+<div style="font-weight:600">${t.title}</div>
+<small style="opacity:.6">${t.description || ""}</small>
+</div>
+
+<div>
+<span class="badge ${typeClass}">
+${t.type || "Feature"}
+</span>
+</div>
+
+<div>
+<span class="badge ${priorityClass}">
+${t.priority}
+</span>
+</div>
+
+<div>
+<span class="badge">
+${t.status.replace("_"," ")}
+</span>
+</div>
+
+<div class="assignee">
+<div class="assignee-avatar">
+${t.assignedUser ? t.assignedUser.name.charAt(0).toUpperCase() : "U"}
+</div>
+${t.assignedUser ? t.assignedUser.name : "Unassigned"}
+</div>
+
+<div>
+${t.dueDate
+? new Date(t.dueDate).toLocaleDateString()
+: "-"}
+</div>
+
+</div>
+`;
+}).join("")}
+
+</div>
+`;
+}
+
+
+/* OPEN DETAILS */
+let selectedTicket=null;
+function openTicketDetails(ticket){
+
+selectedTicket = ticket;
+
+detailTitle.innerText = "TICKET-" + ticket.id + " : " + ticket.title;
+detailDesc.innerText = ticket.description || "No description";
+
+detailStatus.innerText = ticket.status.replace("_"," ");
+detailPriority.innerText = ticket.priority;
+
+detailDue.innerText =
+ticket.dueDate
+? new Date(ticket.dueDate).toLocaleDateString()
+: "-";
+
+detailCreated.innerText =
+ticket.createdAt
+? new Date(ticket.createdAt).toLocaleString()
+: "-";
+
+/* assignee */
+assignedUserBox.innerText =
+ticket.assignedUser
+? ticket.assignedUser.name
+: "Unassigned";
+
+ticketDetailsModal.style.display="flex";
+}
+
+/* CLOSE */
+function closeTicketDetails(){
+ticketDetailsModal.style.display="none";
+}
+
+/* OPEN ASSIGN MODAL*/
+/* OPEN ASSIGN MODAL */
+async function openAssignModal(){
+
+if(!selectedTicket) return;
+
+document.getElementById("assignModal").style.display = "flex";
+
+const container = document.getElementById("assignUserList");
+container.innerHTML = "Loading team members...";
+
+try{
+
+const res = await fetch(`${API}/user/project/${projectId}`);
+const users = await res.json();
+
+container.innerHTML = "";
+
+users.forEach(user => {
+
+const row = document.createElement("div");
+row.className = "assign-user";
+
+row.innerHTML = `
+<div class="assignee">
+<div class="assignee-avatar">
+${user.name.charAt(0).toUpperCase()}
+</div>
+${user.name}
+</div>
+
+<button class="save-btn">Assign</button>
+`;
+
+row.querySelector("button").onclick = () =>
+assignTicket(user.id);
+
+container.appendChild(row);
+
+});
+
+}catch(e){
+container.innerHTML = "Failed to load members";
+console.error(e);
+}
+}
+
+async function assignTicket(userId){
+
+await fetch(
+`${API}/tickets/${selectedTicket.id}/assign/${userId}`,
+{ method:"PUT" }
+);
+
+closeAssignModal();
+closeTicketDetails();
+loadTickets();
+}
+
+function closeAssignModal(){
+document.getElementById("assignModal").style.display = "none";
+}
+
+</script>
+
+</body>
+</html>

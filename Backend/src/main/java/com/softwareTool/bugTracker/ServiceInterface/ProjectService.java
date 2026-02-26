@@ -19,4 +19,6 @@ public interface ProjectService {
     ProjectResponseDto removeMembers(Long id, MemberUpdateDto memberUpdateDto);
 
     List<ProjectResponseDto> getAllProject();
+
+    ProjectResponseDto getProjectById(Long id);
 }
